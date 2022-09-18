@@ -1,1 +1,1 @@
-# Prog_II_Kodutoo
+# Programmeerimine II iseseisva töö repositoorium
