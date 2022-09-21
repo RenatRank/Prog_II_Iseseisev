@@ -26,13 +26,16 @@ const users: IUser[] = [{
   },
 ];
 
+//Serveritöö endpoint
 app.get('/api/v1/health', (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: 'Healthy',
+    message: 'Healthyrfgdfgdf',
   });
 });
 
+
+// Kasutajate nimekiri
 app.get('/api/v1/users', (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
@@ -41,7 +44,30 @@ app.get('/api/v1/users', (req: Request, res: Response) => {
     });
   });
 
-  app.post('/api/v1/users', (req: Request, res: Response) => {
+//Kasutaja id alusel
+app.get('/api/v1/users/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const user = users.find(element => element.id === id);
+    if (!user) {
+      return res.status (404).json({
+        success: false,
+        message: "User not found",
+      })
+    } 
+  return res.status(200).json({
+    success: true,
+    message: `User with ID ${user.id} found`,
+    data: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    }
+  });
+});
+
+//Kasutaja loomine
+app.post('/api/v1/users', (req: Request, res: Response) => {
     const {firstName, lastName, email, password}= req.body;
     const id = users.length + 1;
     const newUser: IUser = {
@@ -55,25 +81,54 @@ app.get('/api/v1/users', (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       message: `User with ID ${newUser.id} created`,
-      users,
     });
   });
 
-  app.delete('/api/v1/users/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = users.findIndex(element => element.id === id);
-      if (!index) {
-        return res.status (404).json({
-          success: false,
-          message: "user not found",
-        })
-      } 
-    users.splice(index,1);
-    return res.status(200).json({
-      success: true,
-      message: "User deleted",
-    });
+//Kasutaja kustutamine
+app.delete('/api/v1/users/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const index = users.findIndex(element => element.id === id);
+    if (index === -1) {
+      return res.status (404).json({
+        success: false,
+        message: "User not found",
+      })
+    } 
+  users.splice(index, 1);
+  return res.status(200).json({
+    success: true,
+    message: "User deleted",
   });
+});
+
+//Kasutaja muutmine
+app.patch('/api/v1/users/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const { firstName, lastName, email, password } = req.body;
+  const user = users.find(element => element.id === id);
+    if (!user) {
+      return res.status (404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    if (!firstName && !lastName && !email && !password) {
+      return res.status (404).json({
+        sucess:false,
+        message: 'Nothing to change!',
+      });
+    }
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (password) user.password = password;
+
+  return res.status(200).json({
+    success: true,
+    message: 'User data changed',
+  });
+});
+
 
 
 
@@ -83,9 +138,3 @@ app.listen(PORT, () => {
 });
 
 
-/* 
-1) kasutajad
-2) kursused
-3) õppejõud
-4) ruum
-*/
