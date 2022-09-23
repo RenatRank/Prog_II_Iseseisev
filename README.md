@@ -8,19 +8,19 @@ Ressursid:
 - kustutamine
 - muutmine
 
-2) õppeaine - nimetus, kursus
+2) õppeaine - nimetus, --> kursus
 - nimekirja lugemine
 - loomine
 - kustutamine
 - muutmine
 
-3) õppejõud - nimi, email, õppeaine
+3) õppejõud - nimi, email, --> antav õppeaine
 - nimekirja lugemine
 - loomine
 - kustutamine
 - muutmine
 
-4) kursus - eriala nimetus
+4) kursus - eriala nimetus  --> õpitavad ained
 - nimekirja lugemine
 - loomine
 - kustutamine
