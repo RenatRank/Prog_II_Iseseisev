@@ -1,74 +1,16 @@
 import express, { Request, Response, Express } from 'express';
 import internal from 'stream';
+import { INewUser, IUser } from './components/users/interfaces';
+import { ICourse, INewCourse } from './components/courses/interfaces';
+import { IRoom, INewRoom } from './components/rooms/interfaces';
+import { INewSubject, ISubject } from './components/subjects/interfaces';
+import { users, courses, rooms, subjects } from './mockData';
+import usersControllers from './components/users/controllers';
 
 const app: Express = express();
 const PORT: number = 3000;
 
 app.use(express.json());
-
-interface INewUser {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-};
-
-interface IUser extends INewUser {
-    id: number,
-};
-
-const users: IUser[] = [{
-    id: 1,
-    firstName: "Juhan",
-    lastName: "Juurikas",
-    email: "juhan@juurikas.ee",
-    password: "juhan",
-  },
-];
-
-interface INewCourse{
-  courseName: string,
-};
-
-interface ICourse extends INewCourse{
-   id:number,
-};
-
-const courses: ICourse[] = [{
-  id: 1,
-  courseName: "Rakendusinformaatika"
-}];
-
-interface INewTeacher {
-  firstName: string,
-  lastName: string,
-  email: string
-};
-
-interface ITeacher extends INewTeacher {
-  id: number,
-};
-
-const teachers: ITeacher [] = [{
-  id: 1,
-  firstName: "Mai",
-  lastName: "Kuu",
-  email: "mai@kuu.ee"
-}]
-
-interface INewSubject{
-  subjectName: string,
-};
-
-interface ISubject extends INewSubject{
-   id:number,
-};
-
-const subjects: ISubject[] = [{
-  id: 1,
-  subjectName: "Programmeerimine II"
-}];
-
 
 
 //Serveritöö endpoint
@@ -81,53 +23,13 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 
 
 // Kasutajate nimekiri
-app.get('/api/v1/users', (req: Request, res: Response) => {
-    res.status(200).json({
-      success: true,
-      message: "List of users:",
-      users,
-    });
-  });
+app.get('/api/v1/users', usersControllers.getAllUsers);
 
 //Kasutaja id alusel
-app.get('/api/v1/users/:id', (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const user = users.find(element => element.id === id);
-    if (!user) {
-      return res.status (404).json({
-        success: false,
-        message: "User not found",
-      })
-    } 
-  return res.status(200).json({
-    success: true,
-    message: `User with ID ${user.id} found`,
-    data: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-    }
-  });
-});
+app.get('/api/v1/users/:id', usersControllers.getUserById);
 
 //Kasutaja loomine
-app.post('/api/v1/users', (req: Request, res: Response) => {
-    const {firstName, lastName, email, password}= req.body;
-    const id = users.length + 1;
-    const newUser: IUser = {
-      id,
-      firstName,
-      lastName,
-      email,
-      password,
-    };
-    users.push(newUser); 
-    res.status(201).json({
-      success: true,
-      message: `User with ID ${newUser.id} created`,
-    });
-  });
+app.post('/api/v1/users', usersControllers.addUser);
 
 //Kasutaja kustutamine
 app.delete('/api/v1/users/:id', (req: Request, res: Response) => {
@@ -242,75 +144,71 @@ app.patch('/api/v1/courses/:id', (req: Request, res: Response) => {
   });
 });
 
-/*----------------------ÕPPEJÕUD---------------------------- */
+/*----------------------RUUMID---------------------------- */
 
-// Õppejõudude nimekiri
-app.get('/api/v1/teachers', (req: Request, res: Response) => {
+// Ruumide nimekiri
+app.get('/api/v1/rooms', (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: "List of teachers:",
-    teachers,
+    message: "List of rooms:",
+    rooms,
   });
 });
 
-//Õppejõu andmete sisestus:
-app.post('/api/v1/teachers', (req: Request, res: Response) => {
-  const {firstName, lastName, email}= req.body;
-  const id = teachers.length + 1;
-  const newTeacher: ITeacher = {
+//Ruumide andmete sisestus:
+app.post('/api/v1/rooms', (req: Request, res: Response) => {
+  const {roomNumber}= req.body;
+  const id = rooms.length + 1;
+  const newRoom: IRoom = {
     id,
-    firstName,
-    lastName,
-    email,
+    roomNumber
   };
-  teachers.push(newTeacher); 
+  rooms.push(newRoom); 
   res.status(201).json({
     success: true,
-    message: `Teacher with ID ${newTeacher.id} created`,
+    message: `Room with ID ${newRoom.id} and with number ${newRoom.roomNumber} created`,
   });
 });
 
-//Õppejõu kustutamine
-app.delete('/api/v1/teachers/:id', (req: Request, res: Response) => {
+//Ruumi kustutamine
+app.delete('/api/v1/rooms/:id', (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const index = teachers.findIndex(element => element.id === id);
+  const index = rooms.findIndex(element => element.id === id);
     if (index === -1) {
       return res.status (404).json({
         success: false,
-        message: "Teacher not found",
+        message: "Room not found",
       })
     } 
-  teachers.splice(index, 1);
+  rooms.splice(index, 1);
   return res.status(200).json({
     success: true,
-    message: `Teacher with ID ${id} deleted`,
+    message: `Room with ID ${id} deleted`,
   });
 });
 
-//Õppejõu admete muutmine
-app.patch('/api/v1/teachers/:id', (req: Request, res: Response) => {
+//Ruumi andmete muutmine
+app.patch('/api/v1/rooms/:id', (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const { firstName, lastName, email} = req.body;
-  const teacher = teachers.find(element => element.id === id);
-    if (!teacher) {
+  const { roomNumber} = req.body;
+  const room = rooms.find(element => element.id === id);
+    if (!room) {
       return res.status (404).json({
         success: false,
-        message: "Teacher not found",
+        message: "Room not found",
       });
     }
-    if (!firstName && !lastName && !email) {
+    if (!roomNumber) {
       return res.status (404).json({
         sucess: false,
         message: 'Nothing to change!',
       });
     }
-    if (firstName) teacher.firstName = firstName;
-    if (lastName) teacher.lastName = lastName;
-    if (email) teacher.email = email;
+    if (roomNumber) room.roomNumber = roomNumber;
 
   return res.status(200).json({
     success: true,
-    message: 'Course data changed',
+    message: 'Room data changed',
   });
 });
 
