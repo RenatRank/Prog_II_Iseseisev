@@ -15,7 +15,7 @@
 - kustutamine
 - muutmine
 
-3) õppejõud - nimi, email, --> antav õppeaine
+3) ruumid - number,
 - nimekirja lugemine
 - loomine
 - kustutamine
