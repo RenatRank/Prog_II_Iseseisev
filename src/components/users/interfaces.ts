@@ -1,13 +1,13 @@
 interface INewUser {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-};
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+}
 
 interface IUser extends INewUser {
-    id: number,
-};
+    id: number;
+}
 
 interface IUserWithoutPassword {
     id: number;

@@ -1,4 +1,4 @@
-import express, { Request, Response, Express } from 'express';
+import express, { Request, Response, Express, NextFunction } from 'express';
 import internal from 'stream';
 import { INewUser, IUser } from './components/users/interfaces';
 import { ICourse, INewCourse } from './components/courses/interfaces';
@@ -6,15 +6,23 @@ import { IRoom, INewRoom } from './components/rooms/interfaces';
 import { INewSubject, ISubject } from './components/subjects/interfaces';
 import { users, courses, rooms, subjects } from './mockData';
 import usersControllers from './components/users/controllers';
+import usersMiddlewares from './components/users/middlewares';
+import coursesControllers from './components/courses/controllers';
 
 const app: Express = express();
 const PORT: number = 3000;
 
 app.use(express.json());
 
+const logger = (req: Request, res: Response, next: NextFunction) => {
+  console.log(`${req.method} ${req.url} ${new Date().toISOString()}`);
+  next();
+};
+
+app.use(logger);
 
 //Serveritöö endpoint
-app.get('/api/v1/health', (req: Request, res: Response) => {
+app.get('/api/v1/health', logger, (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: 'Healthyrfgdfgdf',
@@ -29,120 +37,27 @@ app.get('/api/v1/users', usersControllers.getAllUsers);
 app.get('/api/v1/users/:id', usersControllers.getUserById);
 
 //Kasutaja loomine
-app.post('/api/v1/users', usersControllers.addUser);
+app.post('/api/v1/users', usersMiddlewares.checkAddUserData, usersControllers.addUser);
 
 //Kasutaja kustutamine
-app.delete('/api/v1/users/:id', (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const index = users.findIndex(element => element.id === id);
-    if (index === -1) {
-      return res.status (404).json({
-        success: false,
-        message: "User not found",
-      })
-    } 
-  users.splice(index, 1);
-  return res.status(200).json({
-    success: true,
-    message: "User deleted",
-  });
-});
+app.delete('/api/v1/users/:id', usersControllers.deleteUser);
 
 //Kasutaja muutmine
-app.patch('/api/v1/users/:id', (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const { firstName, lastName, email, password } = req.body;
-  const user = users.find(element => element.id === id);
-    if (!user) {
-      return res.status (404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-    if (!firstName && !lastName && !email && !password) {
-      return res.status (404).json({
-        sucess:false,
-        message: 'Nothing to change!',
-      });
-    }
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (email) user.email = email;
-    if (password) user.password = password;
-
-  return res.status(200).json({
-    success: true,
-    message: 'User data changed',
-  });
-});
+app.patch('/api/v1/users/:id', usersControllers.updateUser);
 
 /*----------------------KURSUS---------------------------- */
 
 // Kursuste nimekiri
-app.get('/api/v1/courses', (req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "List of courses:",
-    courses,
-  });
-});
+app.get('/api/v1/courses', coursesControllers.getAllCourses);
 
 //Kursuste sisestus:
-app.post('/api/v1/courses', (req: Request, res: Response) => {
-  const {courseName}= req.body;
-  const id = courses.length + 1;
-  const newCourse: ICourse = {
-    id,
-    courseName,
-  };
-  courses.push(newCourse); 
-  res.status(201).json({
-    success: true,
-    message: `Course with ID ${newCourse.id} created`,
-  });
-});
+app.post('/api/v1/courses', coursesControllers.addCourse);
 
 //Kursuste kustutamine
-app.delete('/api/v1/courses/:id', (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const index = courses.findIndex(element => element.id === id);
-    if (index === -1) {
-      return res.status (404).json({
-        success: false,
-        message: "Course not found",
-      })
-    } 
-  courses.splice(index, 1);
-  return res.status(200).json({
-    success: true,
-    message: `Course with ID ${id} deleted`,
-  });
-});
+app.delete('/api/v1/courses/:id', coursesControllers.deleteCourse);
 
 //Kursuste muutmine
-app.patch('/api/v1/courses/:id', (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const { courseName } = req.body;
-  const course = courses.find(element => element.id === id);
-    if (!course) {
-      return res.status (404).json({
-        success: false,
-        message: "Course not found",
-      });
-    }
-    if (!courseName) {
-      return res.status (404).json({
-        sucess:false,
-        message: 'Nothing to change!',
-      });
-    }
-    if (courseName) course.courseName = courseName;
-
-  return res.status(200).json({
-    success: true,
-    message: 'Course data changed',
-  });
-});
+app.patch('/api/v1/courses/:id', coursesControllers.updateCourse);
 
 /*----------------------RUUMID---------------------------- */
 
