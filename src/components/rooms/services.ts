@@ -15,5 +15,18 @@ const roomsServices = {
         rooms.push(newRoom); 
         return id;
     },
+
+    deleteRooms: (id: number) => {
+        const index = rooms.findIndex(element => element.id === id);
+
+        rooms.splice(index, 1);
+        return index;
+    },
+    
+    updateRooms: (id: number) => {
+        const room = rooms.find(element => element.id === id);
+        return room;
+    }
+    
 };
 export default roomsServices;

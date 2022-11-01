@@ -3,7 +3,7 @@ interface INewSubject{
   };
   
   interface ISubject extends INewSubject{
-     id:number,
+     id: number,
   };
 
   export { INewSubject, ISubject};
