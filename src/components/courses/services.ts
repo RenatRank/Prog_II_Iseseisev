@@ -1,5 +1,4 @@
 import { courses } from "../../mockData";
-import coursesControllers from "./controllers";
 import { ICourse, INewCourse } from "./interfaces";
 
 const coursesServices = {

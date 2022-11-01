@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { users } from "../../mockData";
+
 import { INewUser, IUser } from "./interfaces";
 import usersServices from "./services";
 
@@ -8,7 +8,7 @@ const usersControllers = {
     getAllUsers: (req: Request, res: Response) => {
       const users_ = usersServices.getAllUsers();
      
-      console.log(users);
+      
       res.status(200).json({
           success: true,
           message: 'List of users',

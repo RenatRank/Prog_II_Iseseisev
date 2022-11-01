@@ -1,4 +1,5 @@
 interface INewRoom {
+    id: any;
     roomNumber: string
   };
   

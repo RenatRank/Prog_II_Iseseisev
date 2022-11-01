@@ -8,6 +8,7 @@ import { users, courses, rooms, subjects } from './mockData';
 import usersControllers from './components/users/controllers';
 import usersMiddlewares from './components/users/middlewares';
 import coursesControllers from './components/courses/controllers';
+import roomsControllers from './components/rooms/controllers';
 
 const app: Express = express();
 const PORT: number = 3000;
@@ -62,28 +63,10 @@ app.patch('/api/v1/courses/:id', coursesControllers.updateCourse);
 /*----------------------RUUMID---------------------------- */
 
 // Ruumide nimekiri
-app.get('/api/v1/rooms', (req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "List of rooms:",
-    rooms,
-  });
-});
+app.get('/api/v1/rooms', roomsControllers.getAllRooms);
 
 //Ruumide andmete sisestus:
-app.post('/api/v1/rooms', (req: Request, res: Response) => {
-  const {roomNumber}= req.body;
-  const id = rooms.length + 1;
-  const newRoom: IRoom = {
-    id,
-    roomNumber
-  };
-  rooms.push(newRoom); 
-  res.status(201).json({
-    success: true,
-    message: `Room with ID ${newRoom.id} and with number ${newRoom.roomNumber} created`,
-  });
-});
+app.post('/api/v1/rooms', roomsControllers.addRooms);
 
 //Ruumi kustutamine
 app.delete('/api/v1/rooms/:id', (req: Request, res: Response) => {
