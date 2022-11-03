@@ -23,16 +23,14 @@ const authServices = {
             email: user.email,
             role: user.role
         }
-        const token = await jwt.sign({ id: user.id, email: user.email }, jwtSecret, {expiresIn: "2h"});
+        const token = await jwt.sign(payload, jwtSecret, {expiresIn: "2h"});
         return token;
     },
 
     verify: async (token: string) => {
         const decoded = await jwt.verify(token, jwtSecret);
-        return decoded
+        return decoded;
     }
 };
 
 export default authServices;
-
-//0:51 jõi video pooleli

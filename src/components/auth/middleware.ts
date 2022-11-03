@@ -8,17 +8,18 @@ const authMiddlewares = {
             return res.status(401).json({
                 success: false,
                 message: "Token not found"
-            })
+            });
         }
         try {
             const decoded = await authServices.verify(token);
+            res.locals.user = decoded;
         } catch (error) {
             return res.status(401).json({
                 success: false,
-                message: "Token invalid"})
+                message: "Token invalid"});
         }
         
-        next();
+        return next();
     },
     isAdmin: (req: Request, res:Response, next: NextFunction) =>{
         if(res.locals.user.role !== "Admin")
@@ -26,8 +27,9 @@ const authMiddlewares = {
             return res.status(401).json({
                 success: false,
                 message: "You have to be admin"    
-            })
+            });
             }
+            return next()
     }
 }
 export default authMiddlewares;
