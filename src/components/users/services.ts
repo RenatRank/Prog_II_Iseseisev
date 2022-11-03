@@ -1,5 +1,6 @@
 import { users } from "../../mockData";
-import { INewUser, IUser, IUserWithoutPassword } from "./interfaces";
+import authServices from "../auth/services";
+import { INewUser, IUser, IUserWithoutPassword, IUserWithouRole } from "./interfaces";
 
 const usersServices= {
 
@@ -9,6 +10,7 @@ const usersServices= {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            role: user.role,
         };
     },
     
@@ -20,19 +22,26 @@ const usersServices= {
         return usersWithoutPassword;
     },
 
+    findUserByEmail: (email:string): IUser | undefined => {
+        const user: IUser | undefined = users.find(element => element.email === email);
+        return user;
+    },
+
     findUserById: (id: number): IUser | undefined => {
-        let user: IUser | undefined = users.find(element => element.id === id);
+        const user: IUser | undefined = users.find(element => element.id === id);
         return user;
     },
     
-    addUser: (user:INewUser): number => {
+    addUser: async (user:INewUser): Promise<number> => {
         const id = users.length + 1;
+        const hashedPassword = await authServices.hash(user.password);
         const newUser: IUser = {
-          id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          password: user. password,
+            id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: hashedPassword,
+            role: "User"
         };
         users.push(newUser); 
         return id;
@@ -45,7 +54,7 @@ const usersServices= {
         return true;
     },
 
-    updateUser: (userToUpdate: IUser ): Boolean => {
+    updateUser: (userToUpdate: IUserWithouRole ): Boolean => {
         const { id, firstName, lastName, email, password } = userToUpdate;
         const user = usersServices.findUserById(id);
         

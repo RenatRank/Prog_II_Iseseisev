@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { INewUser, IUser } from "./interfaces";
+import { INewUser, IUser, IUserWithouRole } from "./interfaces";
 import usersServices from "./services";
 
 
@@ -38,15 +38,16 @@ const usersControllers = {
         });
       },
 
-      addUser: (req: Request, res: Response) => {
+      addUser: async (req: Request, res: Response) => {
         const { firstName, lastName, email, password } = req.body;
         const newUser: INewUser = {
             firstName,
             lastName,
             email,
-            password
+            password,
+            role: "User"
         };
-        const id = usersServices.addUser(newUser);
+        const id = await usersServices.addUser(newUser);
         return res.status(201).json({
             success: true,
             message: `User with id ${id} created`,
@@ -86,12 +87,13 @@ const usersControllers = {
           });
       }
 
-      const userToUpdate: IUser = {
+      const userToUpdate: IUserWithouRole = {
           id,
           firstName,
           lastName,
           email,
           password,
+          
       };
   
       usersServices.updateUser(userToUpdate);

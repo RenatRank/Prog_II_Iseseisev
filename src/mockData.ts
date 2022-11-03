@@ -8,7 +8,16 @@ const users: IUser[] = [{
     firstName: "Juhan",
     lastName: "Juurikas",
     email: "juhan@juurikas.ee",
-    password: "juhan",
+    password: "$2b$10$mvmmMafihiscDZ/F.QJvWu1BfvVeLzC.SlfaGFSIfxrJcCh9EOe.i",
+    role: "Admin"
+  },
+  {
+    id: 2,
+    firstName: "Juss",
+    lastName: "Juurikas",
+    email: "juss@juurikas.ee",
+    password: "$2b$10$mvmmMafihiscDZ/F.QJvWu1BfvVeLzC.SlfaGFSIfxrJcCh9EOe.i",
+    role: "User"
   },
   ];
 
