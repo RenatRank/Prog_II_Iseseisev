@@ -1,6 +1,7 @@
 import { users } from "../../mockData";
 import authServices from "../auth/services";
 import { INewUser, IUser, IUserWithoutPassword, IUserWithouRole } from "./interfaces";
+import pool from "../../database";
 
 const usersServices= {
 
@@ -14,12 +15,11 @@ const usersServices= {
         };
     },
     
-    getAllUsers: () => {
-        const usersWithoutPassword = users.map(user => {
-            const userWithoutPassword = usersServices.getUserWithoutPassword(user);
-            return userWithoutPassword;
-        });
-        return usersWithoutPassword;
+    getAllUsers: async () => {
+
+        const [users] = await pool.query("SELECT * FROM API_users;");
+        return users;
+        //00:41
     },
 
     findUserByEmail: (email:string): IUser | undefined => {
