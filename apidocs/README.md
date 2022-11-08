@@ -1,31 +1,6 @@
 ### RESSURSID
 [API ressursid](https://github.com/RenatRank/Prog_II_Iseseisev/blob/main/apidocs/API_ER%20diagram.png)
 
-### Sisaldab järgmisi ressursse:
-1) kasutajad - õppejõud/tunniplaani sisestaja
-- nimekirja lugemine
-- lugemine ID alusel
-- loomine
-- kustutamine
-- muutmine
-
-2) õppeaine - nimetus, --> kursus
-- nimekirja lugemine
-- loomine
-- kustutamine
-- muutmine
-
-3) ruumid - number,
-- nimekirja lugemine
-- loomine
-- kustutamine
-- muutmine
-
-4) kursus - eriala nimetus  --> õpitavad ained
-- nimekirja lugemine
-- loomine
-- kustutamine
-- muutmine
 
 ### ENDPOINDID
 
