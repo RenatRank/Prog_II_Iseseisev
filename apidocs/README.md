@@ -1,5 +1,5 @@
 ### RESSURSID
-[API ressursid]("./API_ER diagram.png")
+[API ressursid](https://github.com/RenatRank/Prog_II_Iseseisev/blob/main/apidocs/API_ER%20diagram.png)
 
 ### Sisaldab järgmisi ressursse:
 1) kasutajad - õppejõud/tunniplaani sisestaja
