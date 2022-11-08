@@ -7,4 +7,9 @@ interface INewRoom {
     id: number
   };
 
-  export { INewRoom, IRoom};
+  interface INewRoomSQL {
+
+    roomNumber: string
+  };
+
+  export { INewRoom, IRoom, INewRoomSQL};

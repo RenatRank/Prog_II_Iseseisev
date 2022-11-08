@@ -6,4 +6,8 @@ interface INewCourse{
      id:number,
   };
 
-  export { ICourse, INewCourse};
+  interface INewCourseSQL{
+   courseName: string,
+ };
+
+  export { ICourse, INewCourse, INewCourseSQL};

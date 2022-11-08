@@ -6,4 +6,8 @@ interface INewSubject{
      id: number,
   };
 
-  export { INewSubject, ISubject};
+  interface INewSubjectSQL{
+   subjectName: string,
+ };
+
+  export { INewSubject, ISubject, INewSubjectSQL};

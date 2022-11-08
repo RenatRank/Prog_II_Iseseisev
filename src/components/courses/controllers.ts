@@ -4,8 +4,8 @@ import coursesServices from './services';
 
 
 const coursesControllers = {
-getAllCourses: (req: Request, res: Response) => {
-    const courses_ = coursesServices.getAllCourses();
+getAllCourses: async (req: Request, res: Response) => {
+    const courses_ = await coursesServices.getAllCourses();
     res.status(200).json({
       success: true,
       message: "List of courses:",
@@ -13,21 +13,21 @@ getAllCourses: (req: Request, res: Response) => {
     });
   },
 
-  addCourse: (req: Request, res: Response) => {
+  addCourse: async (req: Request, res: Response) => {
     const {courseName}= req.body;
     const newCourse: INewCourse = {
       courseName,
     };
-    const id = coursesServices.addCourse(newCourse);
+    const id = await coursesServices.addCourse(newCourse);
     return res.status(201).json({
       success: true,
       message: `Course with ID ${id} created`,
     });
   },
 
-  deleteCourse: (req: Request, res: Response) => {
+  deleteCourse: async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const result = coursesServices.deleteCourse(id);
+    const result = await coursesServices.deleteCourse(id);
       if (!result) {
         return res.status (404).json({
           success: false,
@@ -41,10 +41,14 @@ getAllCourses: (req: Request, res: Response) => {
     });
   },
 
-  updateCourse: (req: Request, res: Response) => {
+  updateCourse: async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const { courseName } = req.body;
-    const course = coursesServices.updateCourse;
+    const courseToUpdate: ICourse = {
+          courseName,
+          id
+      }
+    const course = await coursesServices.updateCourse(courseToUpdate, id);
       if (!course) {
         return res.status (404).json({
           success: false,
@@ -57,13 +61,7 @@ getAllCourses: (req: Request, res: Response) => {
           message: 'Nothing to change!',
         });
       }
-      const courseToUpdate: ICourse = {
-          courseName,
-          id
-      }
-      coursesServices.updateCourse(courseToUpdate, id);
-      //if (courseName) course.courseName = courseName;
-  
+
     return res.status(200).json({
       success: true,
       message: 'Course data changed',

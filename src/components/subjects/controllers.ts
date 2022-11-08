@@ -4,8 +4,8 @@ import { INewSubject } from "./interfaces";
 import subjectsServices from "./services";
 
 const subjectsControllers = {
-    getAllSubjects: (req: Request, res: Response) => {
-        const AllSubjects = subjectsServices.getAllSubjects();
+    getAllSubjects: async (req: Request, res: Response) => {
+        const AllSubjects = await subjectsServices.getAllSubjects();
         res.status(200).json({
           success: true,
           message: "List of subjects:",
@@ -13,21 +13,21 @@ const subjectsControllers = {
         });
       },
     
-    addSubjects: (req: Request, res: Response) => {
+    addSubjects: async (req: Request, res: Response) => {
         const {subjectName}= req.body;
         const newSubject: INewSubject = {
             subjectName,
         };
-        const id = subjectsServices.addSubjects(newSubject);
+        const id = await subjectsServices.addSubjects(newSubject);
         res.status(201).json({
           success: true,
           message: `Subject with ID ${id} created`,
         });
       },
     
-    deleteSubjects: (req: Request, res: Response) => {
+    deleteSubjects: async (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
-        const index = subjectsServices.deleteSubjects(id);
+        const index = await subjectsServices.deleteSubjects(id);
           if (index === -1) {
             return res.status (404).json({
               success: false,
@@ -41,23 +41,24 @@ const subjectsControllers = {
         });
       },
 
-    updateSubjects: (req: Request, res: Response) => {
+    updateSubjects: async (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         const { subjectName } = req.body;
-        const subject = subjectsServices.updateSubjects(id);
+        
+        const subject = await subjectsServices.updateSubjects(id, subjectName);
           if (!subject) {
             return res.status (404).json({
               success: false,
               message: "Subject not found",
             });
           }
-          if (!subjectName) {
+      /*    if (!subjectName) {
             return res.status (404).json({
               sucess:false,
               message: 'Nothing to change!',
             });
-          }
-          if (subjectName) subject.subjectName = subjectName;
+          }*/
+          
       
         return res.status(200).json({
           success: true,

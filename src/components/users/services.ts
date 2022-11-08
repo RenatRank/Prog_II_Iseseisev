@@ -41,7 +41,6 @@ const usersServices= {
 
     deleteUser: async (id: number): Promise<Boolean> => {
         const result = await pool.query("UPDATE API_users SET dateDeleted=? WHERE id=?;", [new Date(), id]);
-        console.log(result);
         return true;
     },
 

@@ -1,32 +1,39 @@
-import { idText } from "typescript";
-import { subjects } from "../../mockData";
-import { ISubject, INewSubject } from "./interfaces";
+
+import { FieldPacket, ResultSetHeader } from "mysql2";
+import pool from "../../database";
+import { ISubject, INewSubject, INewSubjectSQL } from "./interfaces";
 
 const subjectsServices = {
-    getAllSubjects: () => {
-        return subjects;
+    getAllSubjects: async () => {
+        const subjects = await pool.query("SELECT id, subjectName, dateCreated FROM API_subjects WHERE dateDeleted is NULL;")
+        return subjects[0];
     },
 
-    addSubjects: (subject: INewSubject) => {
-        const id = subjects.length + 1;
-        const newSubject: ISubject = {
-            id,
+    addSubjects: async (subject: INewSubject) => {
+        const newSubject: INewSubjectSQL = {
             subjectName: subject.subjectName,
           };
-        subjects.push(newSubject); 
+        const [result]: [ResultSetHeader, FieldPacket[]]  = await pool.query("INSERT INTO API_subjects SET ?;", [newSubject])
+        return result.insertId;
+
+    },
+
+    deleteSubjects: async (id:number) => {
+        const [result] = await pool.query("UPDATE API_subjects SET dateDeleted=? WHERE id=?;", [new Date(), id]);
         return id;
     },
 
-    deleteSubjects: (id:number) => {
-        const index = subjects.findIndex(element => element.id === id);
-        subjects.splice(index, 1);
-        return id;
-    },
+    updateSubjects: async (id:number, subjectName:string) => {
+        const checkName  = await pool.query ("SELECT subjectName FROM API_subjects WHERE id = ?;", [id]);
+        console.log(checkName[0]);
 
-    updateSubjects: (id: number) => {
-        const subject = subjects.find(element => element.id === id);
-        
-        return subject;
+        const update = {
+            subjectName: subjectName
+
+        };
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await pool.query("UPDATE API_subjects SET ? WHERE id=?;", [update, id]); 
+        return true;
 
     }
 };

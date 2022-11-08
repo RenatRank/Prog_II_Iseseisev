@@ -1,33 +1,36 @@
+import { FieldPacket, ResultSetHeader } from "mysql2";
+import pool from "../../database";
 import { courses } from "../../mockData";
-import { ICourse, INewCourse } from "./interfaces";
+import { ICourse, INewCourse, INewCourseSQL } from "./interfaces";
 
 const coursesServices = {
-    getAllCourses: () =>{
+    getAllCourses: async () =>{
+        const [courses] = await pool.query("SELECT id, courseName, dateCreated FROM API_courses where dateDeleted is NULL;");
         return courses;
     },
 
-    addCourse: (course: INewCourse) =>{
-        const id = courses.length + 1;
-        const newCourse: ICourse = {
-          id,
+    addCourse: async (course: INewCourse) =>{
+        const newCourse: INewCourseSQL = {
           courseName: course.courseName,
-        };
-        courses.push(newCourse); 
-        return id;
+        };        
+        const [courses]: [ResultSetHeader, FieldPacket[]] = await pool.query("INSERT INTO API_courses SET ?;", [newCourse]);
+        return courses.insertId;
     },
 
-    deleteCourse: (id:number): Boolean =>{
-        const index = courses.findIndex(element => element.id === id);
-        if(index === -1) return false;
-        courses.splice(index, 1);
-        return true;
+    deleteCourse: async (id:number): Promise<Boolean> =>{
+        const [coursesToUpdate]: [ResultSetHeader, FieldPacket[]] = await pool.query("UPDATE API_courses SET dateDeleted = ? WHERE id = ?;", [new Date(), id]);
+        if(coursesToUpdate.affectedRows == 0){ return false;}
+        else{return true;};      
+        
     },
 
-    updateCourse: (courseToUpdate: ICourse, id: number): Boolean => {
-        const {courseName} = courseToUpdate;
-        const course = courses.find(element => element.id === id);
-        if (course && courseName) course.courseName = courseName;
-        return true;
+    updateCourse: async (courseToUpdate: INewCourse, id: number): Promise<Boolean> => {
+        const newCourse: INewCourseSQL = {
+            courseName: courseToUpdate.courseName,
+          };   
+        const [coursesToUpdate]: [ResultSetHeader, FieldPacket[]] = await pool.query("UPDATE API_courses SET courseName = ? WHERE id = ?;", [newCourse.courseName, id]);
+        if(coursesToUpdate.affectedRows == 0){ return false;}
+        else{return true;};     
 
     }
 };
