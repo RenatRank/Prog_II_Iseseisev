@@ -10,7 +10,7 @@ const usersServices= {
     
     getAllUsers: async () => {
 
-        const [users] = await pool.query("SELECT id, password, firstName, lastName, email, role, dateCreated FROM API_users WHERE dateDeleted is NULL;");
+        const [users] = await pool.query("SELECT id, firstName, lastName, email, role, dateCreated FROM API_users WHERE dateDeleted is NULL;");
         return users;
         
     },

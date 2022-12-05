@@ -1,12 +1,13 @@
 import express from "express";
+import authMiddlewares from "../auth/middleware";
 import subjectsControllers from "./controllers";
 const subjectsRoutes = express.Router();
 
 subjectsRoutes
     .get("/", subjectsControllers.getAllSubjects)
-    .post("/", subjectsControllers.addSubjects)
-    .delete("/:id", subjectsControllers.deleteSubjects)
-    .patch("/:id", subjectsControllers.updateSubjects);
+    .post("/", authMiddlewares.isAdmin, subjectsControllers.addSubjects)
+    .delete("/:id", authMiddlewares.isAdmin, subjectsControllers.deleteSubjects)
+    .patch("/:id", authMiddlewares.isAdmin, subjectsControllers.updateSubjects);
 
 export default subjectsRoutes;
 

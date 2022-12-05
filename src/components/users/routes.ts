@@ -5,10 +5,10 @@ import authMiddlewares from '../auth/middleware';
 const usersRoutes = express.Router();
 
 usersRoutes
-    .get('/', authMiddlewares.isAdmin, usersControllers.getAllUsers)
+    .get('/', usersControllers.getAllUsers)
     .get('/:id', usersControllers.getUserById)
-    .post('/', usersMiddlewares.checkAddUserData, usersControllers.addUser)
-    .patch('/:id', usersControllers.updateUser)
-    .delete('/:id', usersControllers.deleteUser);
+    .post('/', authMiddlewares.isAdmin, usersMiddlewares.checkAddUserData, usersControllers.addUser)
+    .patch('/:id', authMiddlewares.isAdmin, usersControllers.updateUser)
+    .delete('/:id', authMiddlewares.isAdmin, usersControllers.deleteUser);
 
 export default usersRoutes;
