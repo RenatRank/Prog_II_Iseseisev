@@ -1,9 +1,7 @@
-import { users } from "../../mockData";
 import authServices from "../auth/services";
-import { INewUser, IUser, IUserWithoutPassword, IUserWithouRole, INewUserSQL, IUserSQL } from "./interfaces";
+import { INewUser, IUserWithouRole, IUserSQL } from "./interfaces";
 import pool from "../../database";
 import { FieldPacket, ResultSetHeader } from "mysql2";
-import { readSync } from "fs";
 
 
 const usersServices= {

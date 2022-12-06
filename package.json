@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
-    "test": "mocha -r ts-node/register 'tests/**/*.ts' --exit"
+    "test": "nyc mocha -r ts-node/register 'tests/**/*.ts' --exit"
   },
   "repository": {
     "type": "git",

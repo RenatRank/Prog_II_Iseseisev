@@ -9,7 +9,7 @@ describe('Health controller', () => {
       const response = await request(app).get('/api/v1/health');
       expect(response.body).to.be.a('object');
       expect(response.statusCode).to.equal(200);
-      expect(response.body.sucess).to.true;
+      expect(response.body.success).to.true;
       expect(response.body.message).to.be.equal("API is healthy");
     });
   });

@@ -16,17 +16,17 @@ const wrongUser ={
 describe('Login controller', () => {
     describe('GET /api/v1/login', () => {
       it('responds with error message and statusCode 404', async () => {
-        const response = await request(app).get('/api/v1/login').send(wrongUser);
+        const response = await request(app).post('/api/v1/login').send(wrongUser);
         expect(response.body).to.be.a('object');
         expect(response.statusCode).to.equal(404);
-        expect(response.body.sucess).to.false;
+        expect(response.body.success).to.false;
         expect(response.body.message).to.be.equal("User not found")
       });
-      it('responds with error message and statusCode 200', async () => {
-        const response = await request(app).get('/api/v1/login').send(adminUser);
+      it('responds with token message and statusCode 200', async () => {
+        const response = await request(app).post('/api/v1/login').send(adminUser);
         expect(response.body).to.be.a('object');
-        expect(response.statusCode).to.equal(404);
-        expect(response.body.sucess).to.false;
+        expect(response.statusCode).to.equal(200);
+        expect(response.body.success).to.true;
         expect(response.body.token).to.a("string");
       });
     });

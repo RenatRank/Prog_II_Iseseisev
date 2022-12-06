@@ -6,7 +6,7 @@ const authController = {
     login: async (req: Request, res: Response) => {
         const {email, password} = req.body;
         if (!email || ! password){
-            return res.status(404).json({
+            return res.status(401).json({
                 success: false,
                 message: "Email or password missing"
             });
